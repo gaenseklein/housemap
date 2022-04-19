@@ -31,12 +31,18 @@
         <div class="toolbar">
           <input type="hidden" name="" id="levelcreatoroldname" value="eg">
           <label for="levelcreatorname">name</label> <input type="text" id="levelcreatorname" value="eg">
+          <input type="radio" name="creatortype" value="background" id='creatortypebackground' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypebackground">background</label>
           <input type="radio" name="creatortype" value="grundriss" id='creatortypegrundriss' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypegrundriss">draw paths</label>
           <input type="radio" name="creatortype" value="objekte" id='creatortypeobjekte' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypeobjekte">objects</label>
           <input type="radio" name="creatortype" value="label" id='creatortypelabel' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypelabel">labels</label>
           <input type="radio" name="creatortype" value="foto" id='creatortypefoto' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypefoto">fotolinks</label>
           <button type="button" name="button" onclick="housemap.saveLevel()">save level</button>
           <button type="button" name="button" onclick="housemap.deleteLevel()">delete level</button>
+          <div class="backgroundtools innertoolbar">
+            <input type="file" name="" value="" id="backgroundupload" onchange="housemap.uploadBackground()">
+            <label for="backgroundupload">upload new background</label>
+            <button id="deletebackgroundbutton" type="button" name="button" onclick="housemap.deleteBackground()" disabled>delete background</button>
+          </div>
           <div class="grundrisstools innertoolbar">
             <div class="addPaths">
               <button type="button" name="button" onclick="housemap.createNewPath()">create new path</button>
@@ -50,12 +56,29 @@
               </div>
           </div>
           <div class="objektetools innertoolbar">
-
+            <div class="addObjects">
+              <span>Add Objects:</span>
+              <button id="objektdoor" type="button" name="door" onclick="housemap.addObjectToMap(this)">
+                <div>
+                  <svg width="50" height="50">
+                    <path class="door" d="M0,50  A 50,50,0,0,1,50,0 L48,48 L0,48 Z" />
+                  </svg>
+                </div>
+              </button>
+            </div>
+            <div id="selectedObjectConfig">
+              <input id="selectedObjectConfigId" type="hidden"  name="" value="">
+              <span>Selected Object:</span>
+              <span id="selectedObjectConfigName"></span>
+              <label for="selectedObjectConfigRotation">Rotation:</label>
+              <input id="selectedObjectConfigRotation" type="range" name="" min="-180" max="180" step="1" value="0" oninput="housemap.rotateObjectOnMap()">
+              <button id="selectedObjectConfigDelete" type="button" name="button" onclick="housemap.removeObjectFromMap()">delete object</button>
+            </div>
           </div>
           <div class="labeltools innertoolbar">
 
           </div>
-          <div class="selectedObjectConfig">
+          <div class="fototools innertoolbar">
 
           </div>
         </div>

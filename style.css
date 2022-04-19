@@ -7,6 +7,9 @@
   height:500px;
   position: relative;
   background:lightgrey;
+  background-size:contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 #levelgrundriss,#levelmap > div{
   position: absolute;
@@ -22,19 +25,25 @@
   display: none;
 }
 .grundriss .grundrisstools,
-.grundriss.editPath .editPaths{
+.grundriss.editPath .editPaths,
+.background .backgroundtools.innertoolbar,
+.objekte .objektetools{
   display: block;
 }
 
-#levelmap > div,
+#levelgrundrisspaths,
+#levelgrundrisswaypoints,
+#levelclickmap,
 .grundriss #levelmap.editPath #levelgrundrisspaths,
 #levelmap #levelgrundrisswaypoints{
   display:none;
 }
 .grundriss #levelmap #levelgrundrisspaths,
 #levelmap.editPath #levelgrundrisswaypoints,
-#levelmap.editPath #levelclickmap{
+#levelmap.editPath #levelclickmap,
+.objekte #levelmap #levelobjekte{
   display: block;
+  z-index: 10;
 }
 
 
@@ -89,4 +98,25 @@ path{
   fill:none;
   stroke:black;
   stroke-width:13px;
+}
+path.door{
+  stroke-width:3px;
+}
+.objekt{
+  position: absolute;
+}
+.showObjectConfig .objekt.selected svg path{
+  stroke:blue;
+}
+
+.objektetools button div{
+  width:50px;
+  height:50px;
+}
+
+#selectedObjectConfig{
+  display: none;
+}
+.showObjectConfig #selectedObjectConfig{
+  display: block;
 }

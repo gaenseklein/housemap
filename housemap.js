@@ -21,6 +21,7 @@ housemap = {
   },
   chooseCreatorType: function(radioname){
     levelcreator.className=radioname;
+    levelmap.className='';
   },
   createNewPath: function(){
     housemap.counter.path++;
@@ -191,7 +192,19 @@ housemap = {
     sp.style.top=path.starty+'px';
     sp.style.left=path.startx+'px';
     sp.isCircle=true;
-    dragElement(sp,null,function(elm){
+    // sp.ondblclick=function(){
+    //   path.closePath=true;
+    // }
+    dragElement(sp,function(elm){
+      if(sp.lastClick && Date.now()-sp.lastClick<300){
+        //doubleclick:
+        console.log('doubleclick')
+        path.closePath=true;
+        housemap.drawPaths(housemap.creatinglevel.paths,levelgrundriss);
+      }
+      console.log('click',sp.lastClick)
+      sp.lastClick=Date.now();
+    },function(elm){
       path.startx=elm.offsetLeft+(elm.offsetWidth/2);
       path.starty=elm.offsetTop+(elm.offsetHeight/2);
       housemap.buildEditPath(path);
@@ -219,7 +232,7 @@ housemap = {
     for (let x=0;x<path.waypoints.length;x++){
       d+=' L'+path.waypoints[x].x+','+path.waypoints[x].y;
     }
-    if(path.square)d+='Z'
+    if(path.square || path.closePath)d+='Z'
     let svgpath= document.createElementNS("http://www.w3.org/2000/svg", 'path');
     // svgpath.setAttribute('style','fill:none;stroke:green;stroke-width:1px;stroke-linejoin:round;')
     svgpath.setAttribute('d',d);
@@ -231,6 +244,91 @@ housemap = {
       this.drawPath(paths[x],targetsvg);
     }
   },
+  uploadBackground: function(){
+    let file = backgroundupload.files[0];
+    // let nombre = backgroundupload.files[0].name;
+		let imageType = /image.*/;
+    if (file.type.match(imageType)){
+      let reader = new FileReader();
+      reader.onload = function(e){
+        housemap.creatinglevel.background=reader.result;
+        levelmap.style.backgroundImage='url('+reader.result+')';
+        backgroundupload.value="";
+        lm=document.querySelector('#levelmap .levelmeter');
+        lm.style.display='none';
+        deletebackgroundbutton.disabled=false;
+      }
+      reader.readAsDataURL(file);
+    }
+  },
+  deleteBackground:function(){
+    deletebackgroundbutton.disabled=true;
+    housemap.creatinglevel.background=undefined;
+    levelmap.style.backgroundImage=null;
+    lm=document.querySelector('#levelmap .levelmeter');
+    lm.style.display=null;
+  },
+  addObjectToMap: function(button){
+    this.counter.object++;
+    let ob={
+      type:button.name,
+      id:this.counter.object,
+      svg:button.firstElementChild.cloneNode(true),
+      width:50,
+      height:50,
+      rotation:0,
+    }
+    ob.svg.id='objekt'+this.counter.object;
+    ob.svg.name=this.counter.object;
+    ob.svg.classList.add('objekt');
+    ob.svg.width=ob.width;
+    ob.svg.height=ob.height;
+    ob.svg.style.transform='rotate('+ob.rotation+'deg)'
+    levelobjekte.appendChild(ob.svg);
+    dragElement(ob.svg,function(elm){
+      //select this object to alter its config
+      housemap.selectObject(elm.name);
+    },function(elm){
+      console.log('object moved',elm);
+    });
+    this.creatinglevel.objects.push(ob);
+  },
+  getObjectById:function(id){
+    let ob;
+    for (let x=0;x<this.creatinglevel.objects.length;x++){
+      if(this.creatinglevel.objects[x].id==id){
+        ob=this.creatinglevel.objects[x];
+        ob.positionInArray=x;
+        break;
+      }
+    }
+    return ob;
+  },
+  selectObject:function(id){
+    let ob=this.getObjectById(id);
+    selectedObjectConfigId.value=id;
+    selectedObjectConfigName.innerText=ob.type;
+    selectedObjectConfigRotation.value=ob.rotation;
+    let old=document.querySelector('.objekt.selected');
+    if(old)old.classList.remove('selected');
+    // if(old && old.length>0)while(old.length>0)old[0].classList.remove('selected');
+    ob.svg.classList.add('selected');
+    levelcreator.classList.add('showObjectConfig');
+  },
+  rotateObjectOnMap:function(){
+    let ob=this.getObjectById(selectedObjectConfigId.value);
+    ob.rotation=selectedObjectConfigRotation.value;
+    ob.svg.style.transform='rotate('+ob.rotation+'deg)';
+    console.log(ob.svg.style.transform,ob.rotation);
+  },
+  removeObjectFromMap:function(){
+    let ob=this.getObjectById(selectedObjectConfigId.value);
+    if(!ob){console.error('kein object gefunden zum löschen',selectedObjectConfigId.value);return;}
+    ob.svg.parentElement.removeChild(ob.svg);
+    this.creatinglevel.objects.splice(ob.positionInArray,1);
+    levelcreator.classList.remove('showObjectConfig');
+  },
+
 }
 
 var clicktimer;
@@ -257,6 +355,7 @@ function dragElement(elmnt, clickfunction, followfunction) {
     pos3 = e.clientX;
     pos4 = e.clientY;
     document.onmouseup = closeDragElement;
+    // if(!elmnt.isAllowedToLeaveParent)elmnt.parentElement.onmouseleave=closeDragElement;
     // call a function whenever the cursor moves:
     document.onmousemove = elementDrag;
   }
@@ -275,6 +374,12 @@ function dragElement(elmnt, clickfunction, followfunction) {
     if(elmnt.isCircle){
       top+=elmnt.offsetHeight/2;
       left+=elmnt.offsetWidth/2;
+    }
+    if((top<-10 && top<elmnt.offsetTop)||
+      (left<-10 && left<elmnt.offsetLeft)||
+      (top>510 && top>elmnt.offsetTop)||
+      (left>elmnt.offsetLeft && left>1010-elmnt.offsetWidth)){
+      closeDragElement();
     }
     elmnt.style.top = top + "px";
     elmnt.style.left = left + "px";
