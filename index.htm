@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>housemap-creator</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="toolbar">
+
+    </div>
+    <div id="map">
+      <div id="maplevel">
+
+      </div>
+      <div id="mapobjects">
+
+      </div>
+      <div id="maplabel">
+
+      </div>
+    </div>
+    <div id="fotoview">
+
+    </div>
+    <div id="dialogues">
+      <div id="levelcreator">
+        <div class="title">
+          levelcreator
+        </div>
+        <div class="toolbar">
+          <input type="hidden" name="" id="levelcreatoroldname" value="eg">
+          <label for="levelcreatorname">name</label> <input type="text" id="levelcreatorname" value="eg">
+          <input type="radio" name="creatortype" value="grundriss" id='creatortypegrundriss' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypegrundriss">draw paths</label>
+          <input type="radio" name="creatortype" value="objekte" id='creatortypeobjekte' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypeobjekte">objects</label>
+          <input type="radio" name="creatortype" value="label" id='creatortypelabel' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypelabel">labels</label>
+          <input type="radio" name="creatortype" value="foto" id='creatortypefoto' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypefoto">fotolinks</label>
+          <button type="button" name="button" onclick="housemap.saveLevel()">save level</button>
+          <button type="button" name="button" onclick="housemap.deleteLevel()">delete level</button>
+          <div class="grundrisstools innertoolbar">
+            <div class="addPaths">
+              <button type="button" name="button" onclick="housemap.createNewPath()">create new path</button>
+              <button type="button" name="button" onclick="housemap.createNewSquare()">create new square</button>
+              <button type="button" name="button" disabled>create new curve</button>
+            </div>
+              <div class="editPaths">
+                <button type="button" name="button" onclick="housemap.deleteLastWaypoint()">delete last waypoint</button>
+                <button type="button" name="button" onclick="housemap.deleteLastPath()">delete path</button>
+                <button type="button" name="button" onclick="housemap.returnToPaths()">return to pathoverview</button>
+              </div>
+          </div>
+          <div class="objektetools innertoolbar">
+
+          </div>
+          <div class="labeltools innertoolbar">
+
+          </div>
+          <div class="selectedObjectConfig">
+
+          </div>
+        </div>
+        <div id="levelmap">
+          <div class="levelmeter"></div>
+          <svg id="levelgrundriss" width="1000" height="500">
+            <path d="M120,500 v-500" style="fill:none;stroke:green;stroke-width:1px;stroke-linejoin:round;"></path>
+          </svg>
+          <div id="levelclickmap"></div>
+          <div id="levelgrundrisspaths"></div>
+          <div id="levelgrundrisswaypoints"></div>
+          <div id="levelobjekte"></div>
+          <div id="levellabel"></div>
+        </div>
+      </div>
+    </div>
+    <script src="housemap.js"></script>
+  </body>
+</html>

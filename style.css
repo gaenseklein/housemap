@@ -1,0 +1,92 @@
+#levelcreator{
+  margin:1em;
+}
+#levelmap{
+  margin-top:1em;
+  width:1000px;
+  height:500px;
+  position: relative;
+  background:lightgrey;
+}
+#levelgrundriss,#levelmap > div{
+  position: absolute;
+  top: 0;
+  left:0;
+  width:100%;
+  height:100%;
+}
+
+.innertoolbar,
+.grundriss .editPaths,
+.grundriss.editPath .addPaths{
+  display: none;
+}
+.grundriss .grundrisstools,
+.grundriss.editPath .editPaths{
+  display: block;
+}
+
+#levelmap > div,
+.grundriss #levelmap.editPath #levelgrundrisspaths,
+#levelmap #levelgrundrisswaypoints{
+  display:none;
+}
+.grundriss #levelmap #levelgrundrisspaths,
+#levelmap.editPath #levelgrundrisswaypoints,
+#levelmap.editPath #levelclickmap{
+  display: block;
+}
+
+
+#levelmap div.levelmeter{
+  display: block;
+  background:
+       linear-gradient(-90deg, rgba(0,0,0,.05) 1px, transparent 1px),
+       linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px),
+       linear-gradient(-90deg, rgba(0, 0, 0, .04) 1px, transparent 1px),
+       linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px),
+       linear-gradient(transparent 3px, #f2f2f2 3px, #f2f2f2 78px, transparent 78px),
+       linear-gradient(-90deg, #aaa 1px, transparent 1px),
+       linear-gradient(-90deg, transparent 3px, #f2f2f2 3px, #f2f2f2 78px, transparent 78px),
+       linear-gradient(#aaa 1px, transparent 1px),
+       #f2f2f2;
+   background-size:
+       4px 4px,
+       4px 4px,
+       50px 50px,
+       50px 50px,
+       50px 50px,
+       50px 50px,
+       50px 50px,
+       50px 50px;
+}
+
+.pathpoint{
+  width:30px;
+  height:30px;
+  border-radius: 100%;
+  background:blue;
+  position: absolute;
+  margin-left:-15px;
+  margin-top:-15px;
+}
+.pathpoint.square, waypoint.square{
+  border-radius: 0;
+}
+.waypoint{
+  width:24px;
+  height:24px;
+  border-radius: 100%;
+  background:black;
+  position: absolute;
+  margin-left:-12px;
+  margin-top:-12px;
+}
+.waypoint.startpoint{
+  background:red;
+}
+path{
+  fill:none;
+  stroke:black;
+  stroke-width:13px;
+}
