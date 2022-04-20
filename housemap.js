@@ -12,7 +12,9 @@ housemap = {
     labels:[],
     fotos:[],
     path:{},
+    title:'',
   },
+  pendingfotos:[],
   fontsizes:[
     "initial",
     'large',
@@ -22,7 +24,8 @@ housemap = {
     'xxx-large'
   ],
   init: function(){
-
+    this.creatinglevel.title='eg'
+    this.saveLevel();
   },
   saveLevel: function(){
 
@@ -429,7 +432,107 @@ housemap = {
     l.div.parentElement.removeChild(l.div);
     this.creatinglevel.labels.splice(l.positionInArray,1);
     levelcreator.className='label';
-  }
+  },
+  uploadFotos: function(){
+    for (let x=0;x<fotoupload.files.length;x++){
+      let file = fotoupload.files[x];
+      // let nombre = backgroundupload.files[0].name;
+  		let imageType = /image.*/;
+      if (file.type.match(imageType)){
+        let reader = new FileReader();
+        reader.onload = function(e){
+          housemap.pendingfotos.push(
+            {
+              name:file.name,
+              b64:reader.result
+            });
+          housemap.buildPendingFotos();
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+  },
+  buildPendingFotos:function(){
+    pendingfotos.innerHTML='';
+    for (let x=0;x<this.pendingfotos.length;x++){
+      let b=document.createElement('button');
+      let s=document.createElement('span');
+      s.innerText=this.pendingfotos[x].name
+      b.id='pendingfoto'+x
+      b.name=x
+      b.onclick=function(){
+        housemap.addFotoLink(housemap.pendingfotos[b.name])
+        housemap.pendingfotos.splice(b.name,1)
+        housemap.buildPendingFotos();
+      }
+      let img = new Image();
+      img.src=this.pendingfotos[x].b64;
+      b.appendChild(s);
+      b.appendChild(img);
+      pendingfotos.appendChild(b)
+    }
+  },
+  addFotoLink: function(img){
+    this.counter.foto++;
+    let nl = {
+      b64:img.b64,
+      title:img.name,
+      id:this.counter.foto,
+      x:250,
+      y:250,
+      rotation:0,
+    }
+    let div=document.createElement('div')
+    let icon=new Image();
+    icon.src="cam.png"
+    div.appendChild(icon)
+    div.className="fotolink"
+    div.name=nl.id
+
+    dragElement(div,null,null)
+    div.onclick=function(){
+      housemap.selectFotoLink(this.name)
+    }
+    nl.div=div
+    this.creatinglevel.fotos.push(nl)
+    levelfotos.appendChild(div);
+    this.selectFotoLink(nl.id);
+  },
+  getFotoLinkById: function(id){
+    let fl;
+    for (let x=0;x<this.creatinglevel.fotos.length;x++){
+      if(this.creatinglevel.fotos[x].id==id){
+        fl=this.creatinglevel.fotos[x]
+        fl.positionInArray=x;
+        break;
+      }
+    }
+    return fl;
+  },
+  selectFotoLink:function(id){
+    let fl=this.getFotoLinkById(id);
+    let old=document.querySelector('.fotolink.selected');
+    if(old)old.classList.remove('selected');
+    fl.div.classList.add('selected');
+    selectedFotoRotation.name=id;
+    levelfotopreview.style.backgroundImage='url('+fl.b64+')'
+  },
+  rotateFoto:function(){
+    let fl=this.getFotoLinkById(selectedFotoRotation.name)
+    fl.rotation=selectedFotoRotation.value
+    fl.div.style.transform='rotate('+fl.rotation+'deg)';
+  },
+  deleteFoto: function(){
+    let fl=this.getFotoLinkById(selectedFotoRotation.name)
+    this.creatinglevel.fotos.splice(fl.positionInArray);
+    fl.div.parentElement.removeChild(fl.div)
+  },
+  moveFotoToLevel: function(targetlevel){
+    let fl=this.getFotoLinkById(selectedFotoRotation.name)
+    this.creatinglevel.fotos.splice(fl.positionInArray);
+    fl.div.parentElement.removeChild(fl.div)
+
+  },
 
 }
 

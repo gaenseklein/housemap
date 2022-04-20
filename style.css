@@ -30,7 +30,8 @@
 .background .backgroundtools.innertoolbar,
 .objekte .objektetools,
 .label .labeltools,
-.labelSelected .selectedLabel{
+.labelSelected .selectedLabel,
+.foto .fototools{
   display: block;
 }
 
@@ -44,7 +45,8 @@
 .grundriss #levelmap #levelgrundrisspaths,
 #levelmap.editPath #levelgrundrisswaypoints,
 #levelmap.editPath #levelclickmap,
-.objekte #levelmap #levelobjekte{
+.objekte #levelmap #levelobjekte,
+.foto #levelfotos{
   display: block;
   z-index: 10;
 }
@@ -135,4 +137,24 @@ path.door{
 
 #levellabel .label.selected{
   color:red;
+}
+.fotolink{
+  width:50px;
+}
+.fotolink img{
+  max-width: 100%;
+}
+#fotoupload{
+  display: none;
+}
+#pendingfotos img{
+  max-height:3em;
+}
+#levelfotopreview{
+  background-size:contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  width: 100vw;
+  height:100vh;
 }

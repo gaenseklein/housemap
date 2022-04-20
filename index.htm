@@ -29,6 +29,11 @@
           levelcreator
         </div>
         <div class="toolbar">
+          <label for="levelchoose">choose level</label>
+          <select id="levelchoose" class="" name="">
+            <option value="eg">eg</option>
+            <option value="new">add new level</option>
+          </select>
           <input type="hidden" name="" id="levelcreatoroldname" value="eg">
           <label for="levelcreatorname">name</label> <input type="text" id="levelcreatorname" value="eg">
           <input type="radio" name="creatortype" value="background" id='creatortypebackground' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypebackground">background</label>
@@ -61,7 +66,7 @@
               <button id="objektdoor" type="button" name="door" onclick="housemap.addObjectToMap(this)">
                 <div>
                   <svg width="50" height="50" viewbox="0 0 50 50">
-                    <path class="door" d="M0,50  A 50,50,0,0,1,50,0 L48,48 L0,48 Z" />
+                    <path class="door" d="M0,50  A 50,50,0,0,1,50,0 L48,52 L0,52 Z" />
                   </svg>
                 </div>
               </button>
@@ -91,19 +96,43 @@
 
           </div>
           <div class="fototools innertoolbar">
+            <input id="fotoupload" type="file" name="" value="" multiple onchange="housemap.uploadFotos()">
+            <label for="fotoupload">upload fotos</label>
+            <details>
+            <summary>
+              pending fotos
+              <span class="icon">👇</span>
+            </summary>
+            <div id="pendingfotos">
+              <button id="pendingfoto1" type="button" name="button">
+                <span>title of foto</span>
+                <img class="fotothumb" src="" alt="">
+              </button>
+            </div>
+          </details>
+          <div class="selectedFoto">
+            <label for="selectedFotoRotation">rotation:</label>
+            <input id="selectedFotoRotation" type="range" name="" min="-180" max="180" step="1" value="0" oninput="housemap.rotateFoto()">
+            <button type="button" name="button" onclick="housemap.deleteFoto()">delete label</button>
+            <select id="fotolevelchange" name="" onchange="housemap.moveFotoToLevel(this.value)">
+              <option value="eg" selected>eg</option>
+            </select>
+          </div>
 
           </div>
         </div>
+        <div id="levelfotopreview"></div>
         <div id="levelmap">
           <div class="levelmeter"></div>
           <svg id="levelgrundriss" width="1000" height="500">
-            
+
           </svg>
           <div id="levelclickmap"></div>
           <div id="levelgrundrisspaths"></div>
           <div id="levelgrundrisswaypoints"></div>
           <div id="levelobjekte"></div>
           <div id="levellabel"></div>
+          <div id="levelfotos"></div>
         </div>
       </div>
     </div>
