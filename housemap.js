@@ -13,6 +13,14 @@ housemap = {
     fotos:[],
     path:{},
   },
+  fontsizes:[
+    "initial",
+    'large',
+    'larger',
+    'x-large',
+    'xx-large',
+    'xxx-large'
+  ],
   init: function(){
 
   },
@@ -277,6 +285,7 @@ housemap = {
       width:50,
       height:50,
       rotation:0,
+      mirror:false,
     }
     ob.svg.id='objekt'+this.counter.object;
     ob.svg.name=this.counter.object;
@@ -291,7 +300,22 @@ housemap = {
     },function(elm){
       console.log('object moved',elm);
     });
+    ob.svg.onclick=function(e){
+      housemap.selectObject(this.name);
+    }
     this.creatinglevel.objects.push(ob);
+    housemap.selectObject(ob.id);
+  },
+  mirrorObject: function(){
+    let ob=this.getObjectById(selectedObjectConfigId.value);
+    if(!ob){
+      console.log('ob not found:',ob,selectedObjectConfigId.value)
+      return;
+    }
+    ob.mirror=selectedObjectConfigMirror.checked;
+    if(selectedObjectConfigMirror.checked)ob.svg.style.transform+=' scale(-1,1)';
+    else ob.svg.style.transform='rotate('+ob.rotation+'deg)';
+
   },
   getObjectById:function(id){
     let ob;
@@ -319,6 +343,7 @@ housemap = {
     let ob=this.getObjectById(selectedObjectConfigId.value);
     ob.rotation=selectedObjectConfigRotation.value;
     ob.svg.style.transform='rotate('+ob.rotation+'deg)';
+    if(selectedObjectConfigMirror.checked)ob.svg.style.transform+=' scale(-1,1)';
     console.log(ob.svg.style.transform,ob.rotation);
   },
   removeObjectFromMap:function(){
@@ -328,6 +353,83 @@ housemap = {
     this.creatinglevel.objects.splice(ob.positionInArray,1);
     levelcreator.classList.remove('showObjectConfig');
   },
+  createLabel:function(){
+    this.counter.label++;
+    let nl = {
+      text:'text',
+      x:250,
+      y:250,
+      id:this.counter.label,
+      rotation:0,
+      size:4, //0-5
+    }
+    let tdiv=document.createElement('div');
+    tdiv.className='label';
+    tdiv.innerText=nl.text;
+    tdiv.id='text'+nl.id;
+    tdiv.name=nl.id;
+    tdiv.style.fontSize=this.fontsizes[nl.size];
+    tdiv.style.transform='rotate('+nl.rotation+'deg)';
+    levellabel.appendChild(tdiv);
+    tdiv.onclick=function(){
+      housemap.selectLabel(this.name);
+    }
+    dragElement(tdiv, null, function(elm){
+      let l=housemap.getLabelById(elm.name);
+      l.x=elm.offsetLeft;
+      l.y=elm.offsetTop;
+    })
+    nl.div=tdiv;
+    selectedLabelText.value=nl.text;
+    this.creatinglevel.labels.push(nl);
+    this.selectLabel(nl.id);
+  },
+  getLabelById: function(id){
+    let l;
+    for (let x=0;x<this.creatinglevel.labels.length;x++){
+      if(this.creatinglevel.labels[x].id==id){
+        l=this.creatinglevel.labels[x];
+        l.positionInArray=x;
+        break;
+      }
+    }
+    return l;
+  },
+  changeLabel: function(){
+    let id=selectedLabelText.name;
+    let l=this.getLabelById(id);
+    l.text=selectedLabelText.value;
+    l.div.innerText=l.text;
+  },
+  selectLabel: function(id){
+    let old=document.querySelector('.label.selected');
+    if(old)old.classList.remove('selected');
+    let l=housemap.getLabelById(id);
+    l.div.classList.add('selected');
+    selectedLabelText.name=id;
+    selectedLabelText.value=l.text;
+    selectedLabelSize.value=l.size;
+    levelcreator.classList.add('labelSelected');
+  },
+  changeLabelSize: function(){
+    let id=selectedLabelText.name;
+    let l=this.getLabelById(id);
+    l.size=selectedLabelSize.value;
+    l.div.style.fontSize=this.fontsizes[l.size];
+  },
+  rotateLabel: function(){
+    let id=selectedLabelText.name;
+    let l=this.getLabelById(id);
+    l.rotation=selectedLabelRotation.value;
+    l.div.style.transform='rotate('+l.rotation+'deg)';
+  },
+  deleteLabel: function(){
+    let id=selectedLabelText.name;
+    let l=this.getLabelById(id);
+    l.div.parentElement.removeChild(l.div);
+    this.creatinglevel.labels.splice(l.positionInArray,1);
+    levelcreator.className='label';
+  }
 
 }
 

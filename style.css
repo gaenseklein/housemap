@@ -21,13 +21,16 @@
 
 .innertoolbar,
 .grundriss .editPaths,
-.grundriss.editPath .addPaths{
+.grundriss.editPath .addPaths,
+.selectedLabel{
   display: none;
 }
 .grundriss .grundrisstools,
 .grundriss.editPath .editPaths,
 .background .backgroundtools.innertoolbar,
-.objekte .objektetools{
+.objekte .objektetools,
+.label .labeltools,
+.labelSelected .selectedLabel{
   display: block;
 }
 
@@ -69,6 +72,9 @@
        50px 50px,
        50px 50px;
 }
+#levelmap > div > div{
+  cursor:move;
+}
 
 .pathpoint{
   width:30px;
@@ -101,17 +107,23 @@ path{
 }
 path.door{
   stroke-width:3px;
+  fill:white;
 }
-.objekt{
+.objekt, .label, .fotolink{
   position: absolute;
 }
 .showObjectConfig .objekt.selected svg path{
-  stroke:blue;
+  stroke:red;
 }
 
-.objektetools button div{
-  width:50px;
-  height:50px;
+.addObjects svg{
+  width:100%;
+  height:100%;
+}
+.addObjects button{
+  width:5ch;
+  height:5ch;
+  padding:2px;
 }
 
 #selectedObjectConfig{
@@ -119,4 +131,8 @@ path.door{
 }
 .showObjectConfig #selectedObjectConfig{
   display: block;
+}
+
+#levellabel .label.selected{
+  color:red;
 }

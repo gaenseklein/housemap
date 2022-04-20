@@ -57,10 +57,10 @@
           </div>
           <div class="objektetools innertoolbar">
             <div class="addObjects">
-              <span>Add Objects:</span>
+              <span>add objects:</span>
               <button id="objektdoor" type="button" name="door" onclick="housemap.addObjectToMap(this)">
                 <div>
-                  <svg width="50" height="50">
+                  <svg width="50" height="50" viewbox="0 0 50 50">
                     <path class="door" d="M0,50  A 50,50,0,0,1,50,0 L48,48 L0,48 Z" />
                   </svg>
                 </div>
@@ -68,14 +68,26 @@
             </div>
             <div id="selectedObjectConfig">
               <input id="selectedObjectConfigId" type="hidden"  name="" value="">
-              <span>Selected Object:</span>
+              <span>selected object:</span>
               <span id="selectedObjectConfigName"></span>
-              <label for="selectedObjectConfigRotation">Rotation:</label>
+              <label for="selectedObjectConfigRotation">rotation:</label>
               <input id="selectedObjectConfigRotation" type="range" name="" min="-180" max="180" step="1" value="0" oninput="housemap.rotateObjectOnMap()">
+              <input id="selectedObjectConfigMirror" type="checkbox" name="" value="" onclick="housemap.mirrorObject()">
+              <label for="selectedObjectConfigMirror">Mirror</label>
               <button id="selectedObjectConfigDelete" type="button" name="button" onclick="housemap.removeObjectFromMap()">delete object</button>
             </div>
           </div>
           <div class="labeltools innertoolbar">
+            <button type="button" name="button" onclick="housemap.createLabel()">new label</button>
+            <div class="selectedLabel">
+              <span>selected label:</span>
+              <input id="selectedLabelText" type="text" name="" value="text" onkeyup="housemap.changeLabel()">
+              <label for="selectedLabelSize">fontsize:</label>
+              <input id="selectedLabelSize" type="range" name="" min="0" max="5" step="1" value="" oninput="housemap.changeLabelSize()">
+              <label for="selectedLabelRotation">rotation:</label>
+              <input id="selectedLabelRotation" type="range" name="" min="-180" max="180" step="1" value="0" oninput="housemap.rotateLabel()">
+              <button type="button" name="button" onclick="housemap.deleteLabel()">delete label</button>
+            </div>
 
           </div>
           <div class="fototools innertoolbar">
@@ -85,7 +97,7 @@
         <div id="levelmap">
           <div class="levelmeter"></div>
           <svg id="levelgrundriss" width="1000" height="500">
-            <path d="M120,500 v-500" style="fill:none;stroke:green;stroke-width:1px;stroke-linejoin:round;"></path>
+            
           </svg>
           <div id="levelclickmap"></div>
           <div id="levelgrundrisspaths"></div>
