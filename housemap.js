@@ -5,6 +5,7 @@ housemap = {
     foto:0,
     label:0,
     object:0,
+    level:0,
   },
   creatinglevel:{
     paths:[],
@@ -12,7 +13,7 @@ housemap = {
     labels:[],
     fotos:[],
     path:{},
-    title:'',
+    name:'',
   },
   pendingfotos:[],
   fontsizes:[
@@ -24,8 +25,9 @@ housemap = {
     'xxx-large'
   ],
   init: function(){
-    this.creatinglevel.title='eg'
-    this.saveLevel();
+    this.creatinglevel.name='eg'
+    this.creatinglevel.id=0;
+    this.level.push(this.creatinglevel);
   },
   saveLevel: function(){
 
@@ -102,6 +104,12 @@ housemap = {
     levelgrundrisspaths.appendChild(pathdiv);
     housemap.creatinglevel.paths.push(path);
   },
+  drawPathPoints: function(){
+    levelgrundrisspaths.innerHTML='';
+    for (let x=0;x<this.creatinglevel.paths.length;x++){
+      levelgrundrisspaths.appendChild(this.creatinglevel.paths[x].div);
+    }
+  },
   returnToPaths: function(){
     levelmap.className='';
     levelcreator.classList.remove('editPath');
@@ -153,7 +161,7 @@ housemap = {
     levelgrundrisswaypoints.onclick=undefined;
     this.buildEditPathSquare(path);
   },
-  buildEditPathSquare(path){
+  buildEditPathSquare:function(path){
     levelgrundrisswaypoints.innerHTML='';
     this.drawPaths(this.creatinglevel.paths,levelgrundriss);
     let sp = document.createElement('div');
@@ -263,14 +271,27 @@ housemap = {
       let reader = new FileReader();
       reader.onload = function(e){
         housemap.creatinglevel.background=reader.result;
-        levelmap.style.backgroundImage='url('+reader.result+')';
         backgroundupload.value="";
-        lm=document.querySelector('#levelmap .levelmeter');
-        lm.style.display='none';
-        deletebackgroundbutton.disabled=false;
+        // levelmap.style.backgroundImage='url('+reader.result+')';
+        // lm=document.querySelector('#levelmap .levelmeter');
+        // lm.style.display='none';
+        // deletebackgroundbutton.disabled=false;
+        housemap.drawBackground();
       }
       reader.readAsDataURL(file);
     }
+  },
+  drawBackground: function(){
+    lm=document.querySelector('#levelmap .levelmeter');
+    if(!this.creatinglevel.background){
+      levelmap.style.backgroundImage=null;
+      lm.style.display=null;
+      deletebackgroundbutton.disabled=false;
+      return;
+    }
+    levelmap.style.backgroundImage='url('+this.creatinglevel.background+')';
+    lm.style.display='none';
+    deletebackgroundbutton.disabled=false;
   },
   deleteBackground:function(){
     deletebackgroundbutton.disabled=true;
@@ -308,6 +329,16 @@ housemap = {
     }
     this.creatinglevel.objects.push(ob);
     housemap.selectObject(ob.id);
+  },
+  drawAllObjectsToMap: function(){
+    levelobjekte.innerHTML='';
+    for (let x=0;x<this.creatinglevel.objects.length;x++){
+      let ob=this.creatinglevel.objects[x].svg
+      if(this.creatinglevel.objects[x].mirror){
+        ob.style.transform='rotate('+ob.rotation+'deg)'+' scale(-1,1)'
+      }
+      levelobjekte.appendChild(ob);
+    }
   },
   mirrorObject: function(){
     let ob=this.getObjectById(selectedObjectConfigId.value);
@@ -366,6 +397,13 @@ housemap = {
       rotation:0,
       size:4, //0-5
     }
+    this.addDivToLabel(nl);
+    levellabel.appendChild(nl.div);
+    selectedLabelText.value=nl.text;
+    this.creatinglevel.labels.push(nl);
+    this.selectLabel(nl.id);
+  },
+  addDivToLabel: function(nl){
     let tdiv=document.createElement('div');
     tdiv.className='label';
     tdiv.innerText=nl.text;
@@ -373,7 +411,6 @@ housemap = {
     tdiv.name=nl.id;
     tdiv.style.fontSize=this.fontsizes[nl.size];
     tdiv.style.transform='rotate('+nl.rotation+'deg)';
-    levellabel.appendChild(tdiv);
     tdiv.onclick=function(){
       housemap.selectLabel(this.name);
     }
@@ -383,9 +420,13 @@ housemap = {
       l.y=elm.offsetTop;
     })
     nl.div=tdiv;
-    selectedLabelText.value=nl.text;
-    this.creatinglevel.labels.push(nl);
-    this.selectLabel(nl.id);
+  },
+  drawAllLabelsToMap: function(){
+    levellabel.innerHTML='';
+    for (let x=0;x<this.creatinglevel.labels.length;x++){
+      levellabel.appendChild(this.creatinglevel.labels[x].div);
+      this.creatinglevel.labels[x].div.classList.remove('selected');
+    }
   },
   getLabelById: function(id){
     let l;
@@ -403,6 +444,7 @@ housemap = {
     let l=this.getLabelById(id);
     l.text=selectedLabelText.value;
     l.div.innerText=l.text;
+    if(l.text.length==0)l.div.innerText='???';
   },
   selectLabel: function(id){
     let old=document.querySelector('.label.selected');
@@ -516,6 +558,12 @@ housemap = {
     fl.div.classList.add('selected');
     selectedFotoRotation.name=id;
     levelfotopreview.style.backgroundImage='url('+fl.b64+')'
+    fotolevelchange.innerHTML='';
+    for (let x=0;x<this.level.length;x++){
+      let opt=document.createElement('option');
+      opt.value=this.level[x].id;
+      opt.innerText=this.level[x].name;
+    }
   },
   rotateFoto:function(){
     let fl=this.getFotoLinkById(selectedFotoRotation.name)
@@ -527,11 +575,74 @@ housemap = {
     this.creatinglevel.fotos.splice(fl.positionInArray);
     fl.div.parentElement.removeChild(fl.div)
   },
-  moveFotoToLevel: function(targetlevel){
+  moveFotoToLevel: function(){
+    let targetlevel = this.getLevelById(fotolevelchange.value);
+    if(!targetlevel)return;
     let fl=this.getFotoLinkById(selectedFotoRotation.name)
+    targetlevel.fotos.push(fl);
     this.creatinglevel.fotos.splice(fl.positionInArray);
     fl.div.parentElement.removeChild(fl.div)
-
+  },
+  getLevelById: function(id){
+    let targetlevel;
+    for (let x=0;x<this.level.length;x++){
+      if(this.level[x].id==id){
+        targetlevel=this.level[x];
+        targetlevel.positionInArray=x;
+        break;
+      }
+    }
+    return targetlevel;
+  },
+  changeLevel: function(){
+    let chooseid=levelchoose.value;
+    if(chooseid=='newLevel'){
+      this.counter.level++;
+      let newLevel={
+        paths:[],
+        objects:[],
+        labels:[],
+        fotos:[],
+        path:{},
+        id:this.counter.level,
+        name:'level'+this.counter.level,
+      }
+      this.level.push(newLevel);
+      let opt= document.createElement('option');
+      opt.value=newLevel.id;
+      opt.innerText=newLevel.name;
+      levelchoose.insertBefore(opt,levelchoose.lastElementChild);
+      levelchoose.value=newLevel.id;
+      chooseid=newLevel.id;
+    }
+    let targetlevel = this.getLevelById(chooseid);
+    if(!targetlevel){
+      console.log('targetlevel not found?',chooseid);
+      return;
+    }
+    this.creatinglevel=targetlevel;
+    levelchoose.value=targetlevel.id;
+    levelcreatoroldname.value=targetlevel.name;
+    levelcreatorname.value=targetlevel.name;
+    this.rebuildLevel();
+  },
+  changeLevelName: function(){
+    this.creatinglevel.name=levelcreatorname.value;
+    for (let x=0;x<levelchoose.children.length;x++){
+      if(levelchoose.children[x].value==this.creatinglevel.id){
+        levelchoose.children[x].innerText=levelcreatorname.value
+        break;
+      }
+    }
+  },
+  rebuildLevel: function(){
+    levelcreator.className='';
+    levelmap.className='';
+    this.drawPaths(this.creatinglevel.paths,levelgrundriss);
+    this.drawBackground();
+    this.drawAllObjectsToMap();
+    this.drawPathPoints();
+    this.drawAllLabelsToMap();
   },
 
 }
@@ -602,3 +713,4 @@ function dragElement(elmnt, clickfunction, followfunction) {
     document.onmousemove = null;
   }
 }
+housemap.init();
