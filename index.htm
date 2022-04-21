@@ -29,20 +29,23 @@
           levelcreator
         </div>
         <div class="toolbar">
-          <label for="levelchoose">change level</label>
-          <select id="levelchoose" class="" name="" onchange="housemap.changeLevel()">
-            <option value="0">eg</option>
-            <option value="newLevel">add new level</option>
-          </select>
-          <input type="hidden" name="" id="levelcreatoroldname" value="eg">
-          <label for="levelcreatorname">name</label> <input type="text" id="levelcreatorname" value="eg" onkeyup="housemap.changeLevelName()">
+          <div class="leveltools">
+            <label for="levelchoose">change level</label>
+            <select id="levelchoose" class="" name="" onchange="housemap.changeLevel()">
+              <option value="0">eg</option>
+              <option value="newLevel">add new level</option>
+            </select>
+            <input type="hidden" name="" id="levelcreatoroldname" value="eg">
+            <label for="levelcreatorname">name</label> <input type="text" id="levelcreatorname" value="eg" onkeyup="housemap.changeLevelName()">
+
+            <button type="button" name="button" onclick="housemap.deleteLevel()">delete level</button>
+          </div>
           <input type="radio" name="creatortype" value="background" id='creatortypebackground' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypebackground">background</label>
           <input type="radio" name="creatortype" value="grundriss" id='creatortypegrundriss' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypegrundriss">draw paths</label>
           <input type="radio" name="creatortype" value="objekte" id='creatortypeobjekte' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypeobjekte">objects</label>
           <input type="radio" name="creatortype" value="label" id='creatortypelabel' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypelabel">labels</label>
           <input type="radio" name="creatortype" value="foto" id='creatortypefoto' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypefoto">fotolinks</label>
           <!--<button type="button" name="button" onclick="housemap.saveLevel()">save level</button>-->
-          <button type="button" name="button" onclick="housemap.deleteLevel()">delete level</button>
           <div class="backgroundtools innertoolbar">
             <input type="file" name="" value="" id="backgroundupload" onchange="housemap.uploadBackground()">
             <label for="backgroundupload">upload new background</label>
@@ -111,6 +114,8 @@
             </div>
           </details>
           <div class="selectedFoto">
+            <span>selected fotolink: </span>
+            <span id="selectedFotoName"></span>
             <label for="selectedFotoRotation">rotation:</label>
             <input id="selectedFotoRotation" type="range" name="" min="-180" max="180" step="1" value="0" oninput="housemap.rotateFoto()">
             <button type="button" name="button" onclick="housemap.deleteFoto()">delete label</button>

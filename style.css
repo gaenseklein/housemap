@@ -22,7 +22,9 @@
 .innertoolbar,
 .grundriss .editPaths,
 .grundriss.editPath .addPaths,
-.selectedLabel{
+.selectedLabel,
+.selectedFoto,
+.fotoSelected .levelmeter{
   display: none;
 }
 .grundriss .grundrisstools,
@@ -31,7 +33,8 @@
 .objekte .objektetools,
 .label .labeltools,
 .labelSelected .selectedLabel,
-.foto .fototools{
+.foto .fototools,
+.fotoSelected .selectedFoto{
   display: block;
 }
 
@@ -158,4 +161,7 @@ path.door{
   position: fixed;
   width: 100vw;
   height:100vh;
+}
+.foto #levelmap{
+  opacity:0.5;
 }

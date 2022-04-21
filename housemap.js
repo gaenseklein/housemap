@@ -518,7 +518,7 @@ housemap = {
     this.counter.foto++;
     let nl = {
       b64:img.b64,
-      title:img.name,
+      name:img.name,
       id:this.counter.foto,
       x:250,
       y:250,
@@ -563,7 +563,11 @@ housemap = {
       let opt=document.createElement('option');
       opt.value=this.level[x].id;
       opt.innerText=this.level[x].name;
+      fotolevelchange.appendChild(opt);
     }
+    fotolevelchange.value=id;
+    levelcreator.classList.add('fotoSelected');
+    selectedFotoName.innerText=fl.name;
   },
   rotateFoto:function(){
     let fl=this.getFotoLinkById(selectedFotoRotation.name)
@@ -593,6 +597,12 @@ housemap = {
       }
     }
     return targetlevel;
+  },
+  drawAllFotoLinksToMap: function(){
+    levelfotos.innerHTML='';
+    for (let x=0;x<this.creatinglevel.fotos.length;x++){
+      levelfotos.appendChild(this.creatinglevel.fotos[x].div);
+    }
   },
   changeLevel: function(){
     let chooseid=levelchoose.value;
@@ -643,6 +653,7 @@ housemap = {
     this.drawAllObjectsToMap();
     this.drawPathPoints();
     this.drawAllLabelsToMap();
+    this.drawAllFotoLinksToMap();
   },
 
 }
