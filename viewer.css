@@ -1,0 +1,64 @@
+.level{
+  position: relative;
+  width:1000px;
+  height:500px;
+  display: none;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.fotolink{
+  width:50px;
+  height: 50px;
+  position: absolute;
+}
+.fotolink path{
+  fill:none;
+  stroke:black;
+  stroke-width:13px;
+}
+.label{
+  position: absolute;
+}
+
+.svgwrapper, input[type=radio]{
+  display: none;
+}
+
+#leveltabs label{
+  border:1px solid;
+}
+#levelradio0:checked ~ #leveltabs #leveltab0,
+#levelradio1:checked ~ #leveltabs #leveltab1,
+#levelradio2:checked ~ #leveltabs #leveltab2,
+#levelradio3:checked ~ #leveltabs #leveltab3,
+#levelradio4:checked ~ #leveltabs #leveltab4{
+  background:lightblue;
+  border:2px solid;
+}
+
+
+#levelradio0:checked ~ #levelwrapper #level0,
+#levelradio1:checked ~ #levelwrapper #level1,
+#levelradio2:checked ~ #levelwrapper #level2,
+#levelradio3:checked ~ #levelwrapper #level3,
+#levelradio4:checked ~ #levelwrapper #level4{
+  display: block;
+}
+
+.fotoview{
+  position: fixed;
+  bottom:0;
+  left:0;
+  width:1px;
+  height:1px;
+  transition: all 1s ease;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.fotoview:focus{
+  width:100vw;
+  height:100vh;
+}

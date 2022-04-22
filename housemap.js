@@ -30,7 +30,13 @@ housemap = {
     this.level.push(this.creatinglevel);
   },
   saveMap: function(exportoptions){
-
+    let saveobj = JSON.parse(JSON.stringify(this.level));
+    let savetext = JSON.stringify(saveobj);
+    savetext = 'var start=`'+savetext+'`;';
+    var a = document.createElement("a");
+    a.href = window.URL.createObjectURL(new Blob([savetext], {type: "text/plain"}));
+    a.download = "start.js";
+    a.click();
   },
   chooseCreatorType: function(radioname){
     levelcreator.className=radioname;
@@ -532,7 +538,10 @@ housemap = {
     div.className="fotolink"
     div.name=nl.id
 
-    dragElement(div,null,null)
+    dragElement(div,null,function(elm){
+      nl.x=elm.offsetLeft;
+      nl.y=elm.offsetTop;
+    })
     div.onclick=function(){
       housemap.selectFotoLink(this.name)
     }

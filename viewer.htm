@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>housemap viewer</title>
+    <link rel="stylesheet" href="viewer.css">
+  </head>
+  <body>
+    <div id="map">
+      <div id="leveltabs"></div>
+      <div id="levelwrapper"></div>
+      <div id="fotowrapper"></div>
+    </div>
+    <div class="svgwrapper">
+      <div id="fotolinksvgwrapper">
+        <svg viewbox="0 0 200 200">
+          <rect x="25" y="90" width="140" height="100" rx="15"  ry="15" />
+          <rect x="60" y="70" width="70" height="50" rx="15"  ry="15" />
+          <circle cx="95" cy="140" r="30" stroke="black" stroke-width="3" fill="white" />
+          <path d="M95,60 L95,10 L75,30 M95,10 L115,30" />
+        </svg>
+      </div>
+    </div>
+    <script src="start.js"></script>
+    <script type="text/javascript">
+    const fontsizes=[
+      "initial",
+      'large',
+      'larger',
+      'x-large',
+      'xx-large',
+      'xxx-large'
+    ]
+    function init(){
+      let lo=JSON.parse(start);
+      console.log(lo);
+      for (let x=0;x<lo.length;x++){
+        let level=lo[x];
+        let radio=createElement('input',{
+          type:'radio',
+          id:'levelradio'+x,
+          name:'level',
+        });
+        let radiolabel=createElement('label',{
+          for:'levelradio'+x,
+          innerText:level.name,
+          id:'leveltab'+x
+        });
+        // radiolabel.setAttribute('for','test');
+        let leveldiv=createElement('div',{
+          className:'level',
+          id:'level'+x,
+        })
+        map.insertBefore(radio,leveltabs);
+        levelwrapper.appendChild(leveldiv);
+        leveltabs.appendChild(radiolabel);
+        //background to level
+        if(level.background)leveldiv.style.backgroundImage='url('+level.background+')';
+        //fotolinks
+        for(let f=0;f<level.fotos.length;f++){
+          let foto=createElement('a',{
+            className:'fotoview',
+            id:'foto'+x+f,
+            href:'#map',
+          });
+          foto.style.backgroundImage='url('+level.fotos[f].b64+')'
+          let fotolink = createElement('a',{
+            className:'fotolink',
+            href:'#foto'+x+f,
+            innerHTML:fotolinksvgwrapper.innerHTML,
+          })
+          fotolink.style.left=level.fotos[f].x+'px'
+          fotolink.style.top=level.fotos[f].y+'px'
+          fotolink.style.transform='rotate('+level.fotos[f].rotation+'deg)'
+          leveldiv.appendChild(fotolink)
+          fotowrapper.appendChild(foto)
+        }
+        //label
+        for(let l=0;l<level.labels.length;l++){
+          let label=createElement('div',{
+            className:'label',
+            innerText: level.labels[l].text,
+          })
+          label.style.left=level.labels[l].x+'px'
+          label.style.top=level.labels[l].y+'px'
+          label.style.transform='rotate('+level.labels[l].rotation+'deg)'
+          label.style.fontSize=fontsizes[level.labels[l].size]
+          leveldiv.appendChild(label)
+        }
+        //paths
+        //objects
+      }
+    }
+
+    init();
+
+    function createElement(type, add){
+      let keys=Object.keys(add);
+      let specialkeys=['for',]
+      let el=document.createElement(type);
+      for (let x=0;x<keys.length;x++){
+        if(specialkeys.indexOf(keys[x])>-1){
+          el.setAttribute(keys[x],add[keys[x]]);
+        }else{
+          el[keys[x]]=add[keys[x]];
+        }
+
+      }
+      return el;
+    }
+
+    </script>
+  </body>
+</html>
