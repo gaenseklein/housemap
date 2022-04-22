@@ -578,7 +578,7 @@ housemap = {
   },
   deleteFoto: function(){
     let fl=this.getFotoLinkById(selectedFotoRotation.name)
-    this.creatinglevel.fotos.splice(fl.positionInArray);
+    this.creatinglevel.fotos.splice(fl.positionInArray,1);
     fl.div.parentElement.removeChild(fl.div)
   },
   moveFotoToLevel: function(){
