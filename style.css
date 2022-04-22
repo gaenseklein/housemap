@@ -145,8 +145,22 @@ path.door{
 .fotolink{
   width:50px;
 }
-.fotolink img{
+.fotolink img,
+.fotolink svg{
   max-width: 100%;
+}
+.fotolink path{
+  stroke:black;
+  stroke-linejoin:round;
+}
+.fotolink rect{
+  fill:black;
+}
+.fotoSelected .fotolink.selected path{
+  stroke:red;
+}
+.fotoSelected .fotolink.selected rect{
+  fill:red;
 }
 #fotoupload{
   display: none;
@@ -164,4 +178,7 @@ path.door{
 }
 .foto #levelmap{
   opacity:0.5;
+}
+#svgcontainer{
+  display: none;
 }

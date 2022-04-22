@@ -118,7 +118,7 @@
             <span id="selectedFotoName"></span>
             <label for="selectedFotoRotation">rotation:</label>
             <input id="selectedFotoRotation" type="range" name="" min="-180" max="180" step="1" value="0" oninput="housemap.rotateFoto()">
-            <button type="button" name="button" onclick="housemap.deleteFoto()">delete label</button>
+            <button type="button" name="button" onclick="housemap.deleteFoto()">delete fotolink</button>
             <select id="fotolevelchange" name="" onchange="housemap.moveFotoToLevel(this.value)">
               <option value="eg" selected>eg</option>
             </select>
@@ -141,6 +141,17 @@
         </div>
       </div>
     </div>
+    <div id="svgcontainer">
+      <div id="fotolinksvgwrapper">
+        <svg viewbox="0 0 200 200">
+          <rect x="25" y="90" width="140" height="100" rx="15"  ry="15" />
+          <rect x="60" y="70" width="70" height="50" rx="15"  ry="15" />
+          <circle cx="95" cy="140" r="30" stroke="black" stroke-width="3" fill="white" />
+          <path d="M95,60 L95,10 L75,30 M95,10 L115,30" />
+        </svg>
+      </div>
+    </div>
+
     <script src="housemap.js"></script>
   </body>
 </html>

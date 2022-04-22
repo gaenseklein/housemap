@@ -29,7 +29,7 @@ housemap = {
     this.creatinglevel.id=0;
     this.level.push(this.creatinglevel);
   },
-  saveLevel: function(){
+  saveMap: function(exportoptions){
 
   },
   chooseCreatorType: function(radioname){
@@ -525,9 +525,10 @@ housemap = {
       rotation:0,
     }
     let div=document.createElement('div')
-    let icon=new Image();
-    icon.src="cam.png"
-    div.appendChild(icon)
+    // let icon=new Image();
+    // icon.src="cam.png"
+    // div.appendChild(icon)
+    div.innerHTML=document.getElementById('fotolinksvgwrapper').innerHTML;
     div.className="fotolink"
     div.name=nl.id
 
@@ -565,7 +566,8 @@ housemap = {
       opt.innerText=this.level[x].name;
       fotolevelchange.appendChild(opt);
     }
-    fotolevelchange.value=id;
+    fotolevelchange.value=this.creatinglevel.id;
+    levelcreator.classList.add('foto');
     levelcreator.classList.add('fotoSelected');
     selectedFotoName.innerText=fl.name;
   },
@@ -581,10 +583,10 @@ housemap = {
   },
   moveFotoToLevel: function(){
     let targetlevel = this.getLevelById(fotolevelchange.value);
-    if(!targetlevel)return;
+    if(!targetlevel || targetlevel==this.creatinglevel)return;
     let fl=this.getFotoLinkById(selectedFotoRotation.name)
     targetlevel.fotos.push(fl);
-    this.creatinglevel.fotos.splice(fl.positionInArray);
+    this.creatinglevel.fotos.splice(fl.positionInArray,1);
     fl.div.parentElement.removeChild(fl.div)
   },
   getLevelById: function(id){
