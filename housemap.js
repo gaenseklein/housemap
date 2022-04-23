@@ -34,10 +34,10 @@ housemap = {
     if(exportoptions.json){
       let saveobj = JSON.parse(JSON.stringify(this.level));
       savetext = JSON.stringify(saveobj);
-      savetext = 'var start=`'+savetext+'`;';
+      // savetext = 'var start=`'+savetext+'`;';
       var a = document.createElement("a");
       a.href = window.URL.createObjectURL(new Blob([savetext], {type: "text/plain"}));
-      a.download = "start.js";
+      a.download = "fotomap.json";
       a.click();
     }
     if(exportoptions.html){
@@ -47,6 +47,64 @@ housemap = {
       a.download = "fotomap.htm";
       a.click();
     }
+  },
+  loadMap: function(){
+    let fi=document.createElement('input');
+    fi.type="file";
+    fi.onchange=function(){
+      let file=this.files[0];
+      let reader = new FileReader();
+      reader.onload=function(e){
+        try {
+          let payload=JSON.parse(reader.result);
+          if(payload){
+            housemap.loadData(payload);
+          }
+        } catch (e) {
+          console.warn('no json?')
+        }
+      }
+      reader.readAsText(file);
+    }
+    fi.click();
+  },
+  loadData: function(leveldata){
+    console.log('loading',leveldata);
+    housemap.level=leveldata;
+    levelchoose.innerHTML='';
+    for (let x=0;x<leveldata.length;x++){
+      let opt= document.createElement('option');
+      opt.value=leveldata[x].id;
+      opt.innerText=leveldata[x].name;
+      levelchoose.appendChild(opt);
+      for (let p=0;p<leveldata[x].paths.length;p++){
+        leveldata[x].paths[p].div=this.createPathDiv(leveldata[x].paths[p])
+      }
+      for(let o=0;o<leveldata[x].objects.length;o++){
+        let ob=leveldata[x].objects[o];
+        ob.svg=document.createElement('div');
+        ob.svg.innerHTML=ob.innerHTML;
+        this.finalizeObjectDiv(ob)
+        console.log(ob)
+      }
+      this.counter.path+=leveldata[x].paths.length;
+      this.counter.foto+=leveldata[x].fotos.length;
+      this.counter.label+=leveldata[x].labels.length;
+      this.counter.object+=leveldata[x].objects.length;
+    }
+    let lopt= document.createElement('option');
+    lopt.value="newLevel";
+    lopt.innerText="add new level"
+    levelchoose.appendChild(lopt)
+
+    levelchoose.value=leveldata[0].id;
+    this.creatinglevel=leveldata[0];
+    levelchoose.value=leveldata[0].id;
+    levelcreatoroldname.value=leveldata[0].name;
+    levelcreatorname.value=leveldata[0].name;
+    this.counter.level+=leveldata.length;
+
+    this.rebuildLevel();
   },
   chooseCreatorType: function(radioname){
     levelcreator.className=radioname;
@@ -95,12 +153,20 @@ housemap = {
       height:200,
       square:true,
     }
+    path.div= this.createPathDiv(path);
+    levelgrundrisspaths.appendChild(path.div);
+    housemap.creatinglevel.paths.push(path);
+    this.drawPaths(housemap.creatinglevel.paths,levelgrundriss);
+  },
+  createPathDiv: function(path){
     let pathdiv=document.createElement('div');
     pathdiv.classList.add('pathpoint');
     pathdiv.id='path'+path.id;
     pathdiv.name=path.id
     pathdiv.classList.add('square');
     pathdiv.isCircle=true;
+    pathdiv.style.left=path.startx+'px'
+    pathdiv.style.top=path.starty+'px'
     dragElement(pathdiv,function(elm){
       housemap.editPathSquare(elm.name)
     }, function(elm){
@@ -116,9 +182,7 @@ housemap = {
       }
       housemap.drawPaths(housemap.creatinglevel.paths,levelgrundriss);
     });
-    path.div=pathdiv;
-    levelgrundrisspaths.appendChild(pathdiv);
-    housemap.creatinglevel.paths.push(path);
+    return pathdiv;
   },
   drawPathPoints: function(){
     levelgrundrisspaths.innerHTML='';
@@ -331,13 +395,20 @@ housemap = {
     ob.innerHTML=ob.innerHTML.replaceAll('\n','')
     ob.innerHTML=ob.innerHTML.replaceAll('\"','\'')
     ob.innerHTML=ob.innerHTML.replaceAll('  ',' ')
-    ob.svg.id='objekt'+this.counter.object;
-    ob.svg.name=this.counter.object;
-    ob.svg.classList.add('objekt');
-    ob.svg.width=ob.width;
-    ob.svg.height=ob.height;
-    ob.svg.style.transform='rotate('+ob.rotation+'deg)'
+    this.finalizeObjectDiv(ob)
     levelobjekte.appendChild(ob.svg);
+    this.creatinglevel.objects.push(ob);
+    housemap.selectObject(ob.id);
+  },
+  finalizeObjectDiv: function(ob){
+    ob.svg.id='objekt'+ob.id;
+    ob.svg.name=ob.id;
+    ob.svg.classList.add('objekt');
+    // ob.svg.width=ob.width;
+    // ob.svg.height=ob.height;
+    ob.svg.style.transform='rotate('+ob.rotation+'deg)'
+    ob.svg.style.left=ob.x+'px'
+    ob.svg.style.top=ob.y+'px'
     dragElement(ob.svg,function(elm){
       //select this object to alter its config
       housemap.selectObject(elm.name);
@@ -349,8 +420,6 @@ housemap = {
     ob.svg.onclick=function(e){
       housemap.selectObject(this.name);
     }
-    this.creatinglevel.objects.push(ob);
-    housemap.selectObject(ob.id);
   },
   drawAllObjectsToMap: function(){
     levelobjekte.innerHTML='';
