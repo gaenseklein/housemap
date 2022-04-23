@@ -81,20 +81,16 @@
           <button type="button" name="button" onclick="housemap.createLabel()">new label</button>
         </div>
         <div class="fototools innertoolbar">
+          <span>pending fotos: </span>
           <input id="fotoupload" type="file" name="" value="" multiple onchange="housemap.uploadFotos()">
           <label for="fotoupload">upload fotos</label>
-          <details>
-            <summary>
-              pending fotos
-              <span class="icon">👇</span>
-            </summary>
+          <div class="pendingfotoswrapper">
+
             <div id="pendingfotos">
-              <button id="pendingfoto1" type="button" name="button">
-                <span>title of foto</span>
-                <img class="fotothumb" src="" alt="">
-              </button>
+              
             </div>
-          </details>
+          </div>
+
 
         </div>
         <div class="selectedItems">

@@ -39,10 +39,13 @@
   padding-left:1ch;
   padding-right: 1ch;
   display: inline-block;
+  background:lightgrey;
 }
 .toolbar input[type=radio]:checked + label{
   border-bottom:2px white;
-  background:aliceblue;
+  background:white;
+  margin-bottom:-2px;
+  padding-bottom: 1px;
 }
 .chooseCreatorType{
   grid-area: creatortype;
@@ -50,6 +53,7 @@
   padding-left: 2ch;
   padding-right: 1ch;
   border-right: 1px solid black;
+  z-index: 3;
 }
 .innertoolbar{
   grid-area:innertoolbar;
@@ -62,6 +66,7 @@
   display: grid;
   grid-auto-flow: column;
   align-items: center;
+  z-index: 2;
 }
 .selectedItems {
     border-top: 1px solid black;
@@ -85,30 +90,34 @@
 .grundriss.editPath .addPaths,
 .selectedLabel,
 .selectedFoto,
+#selectedObjectConfig,
 .fotoSelected .levelmeter{
   display: none;
 }
 .grundriss .grundrisstools,
 .grundriss.editPath .editPaths,
-.background .backgroundtools.innertoolbar,
-.objekte .objektetools,
-.label .labeltools,
-.labelSelected .selectedLabel,
-.foto .fototools,
-.leveledit .leveltools,
 .importexport .file.innertoolbar
 {
   display: block;
 }
+.background .backgroundtools.innertoolbar,
+.leveledit .leveltools,
+.objekte .objektetools,
+.label .labeltools,
+.showObjectConfig #selectedObjectConfig,
+.foto .fototools,
+.labelSelected .selectedLabel,
 .fotoSelected .selectedFoto{
   display:grid;
+}
+.fotoSelected .selectedFoto{
   grid-template-columns: max-content max-content 1fr;
 }
-.selectedFoto label{
+.selectedItems label{
   grid-column:1;
 }
-.selectedFoto button,
-.selectedFoto select{
+.selectedItems button,
+.selectedItems select{
   grid-column:2;
 }
 #levelfotopreview{
@@ -220,13 +229,6 @@ path.door{
   padding:2px;
 }
 
-#selectedObjectConfig{
-  display: none;
-}
-.showObjectConfig #selectedObjectConfig{
-  display: block;
-}
-
 .label #levellabel .label.selected{
   color:red;
 }
@@ -256,24 +258,31 @@ path.door{
 label, button, select{
   cursor: pointer;
 }
-details {
-    position: relative;
-    cursor: pointer;
+
+.fototools.innertoolbar{
+  grid-template-areas:
+  "title pendingfotos"
+  "upload pendingfotos";
+  grid-template-columns: auto 1fr;
+  height:5em;
 }
 
-div#pendingfotos {
-    position: absolute;
-    z-index: 10;
-    background: white;
-    display: grid;
-    grid-template-columns: repeat(5,25ch);
-    border: 1px solid;
-    border-radius: 4px;
-
+.pendingfotoswrapper {
+  width:60ch;
+  height:100%;
+  overflow-x:auto;
+  grid-area: pendingfotos;
+}
+#pendingfotos{
+  display: grid;
+  grid-auto-flow: column;
+  height: 100%;
 }
 #pendingfotos button{
+  display: block;
   position: relative;
-  height:11em;
+  height:100%;
+  width:20ch;
   background-size: contain;
   background-position: left;
   background-repeat: no-repeat;
