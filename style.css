@@ -18,6 +18,67 @@
   width:100%;
   height:100%;
 }
+.toolbar{
+  display: grid;
+  grid-template-areas:
+  "creatortype selectedItem"
+  "innertoolbar selectedItem";
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1.5em 1fr;
+  height:6em;
+}
+.toolbar input[type=radio]{
+  display: none;
+}
+.toolbar .chooseCreatorType label{
+  border-bottom: 2px transparent;
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-radius: 5px 5px 0 0;
+  padding-left:1ch;
+  padding-right: 1ch;
+  display: inline-block;
+}
+.toolbar input[type=radio]:checked + label{
+  border-bottom:2px white;
+  background:aliceblue;
+}
+.chooseCreatorType{
+  grid-area: creatortype;
+  align-self: end;
+  padding-left: 2ch;
+  padding-right: 1ch;
+  border-right: 1px solid black;
+}
+.innertoolbar{
+  grid-area:innertoolbar;
+  border-left:1px solid black;
+  border-top: 1px solid black;
+  border-top-left-radius: 5px;
+  padding-left:1ch;
+  padding-top:5px;
+  height:100%;
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+}
+.selectedItems {
+    border-top: 1px solid black;
+    border-left: 1px solid transparent;
+    margin-left: -4px;
+    border-right: 1px solid black;
+    grid-area: selectedItem;
+    border-radius: 10px;
+    margin-top: 1px;
+    padding-left: 1ch;
+}
+.selectedItems h4{
+  margin-top:5px;
+  margin-bottom:4px;
+  text-align: center;
+  grid-column:1/3;
+}
 
 .innertoolbar,
 .grundriss .editPaths,
@@ -34,8 +95,35 @@
 .label .labeltools,
 .labelSelected .selectedLabel,
 .foto .fototools,
-.fotoSelected .selectedFoto{
+.leveledit .leveltools,
+.importexport .file.innertoolbar
+{
   display: block;
+}
+.fotoSelected .selectedFoto{
+  display:grid;
+  grid-template-columns: max-content max-content 1fr;
+}
+.selectedFoto label{
+  grid-column:1;
+}
+.selectedFoto button,
+.selectedFoto select{
+  grid-column:2;
+}
+#levelfotopreview{
+  grid-column:3/4;
+  grid-row:1/5;
+  background-size:contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  height:200%;
+  position: relative;
+  margin-left: 10ch;
+}
+#levelfotopreview img{
+  position: absolute;
+  width:100%;
 }
 
 #levelgrundrisspaths,
@@ -162,20 +250,40 @@ path.door{
 .fotoSelected .fotolink.selected rect{
   fill:red;
 }
-#fotoupload{
+#fotoupload,#backgroundupload{
   display: none;
 }
-#pendingfotos img{
-  max-height:3em;
+label, button, select{
+  cursor: pointer;
 }
-#levelfotopreview{
-  background-size:contain;
-  background-position: center;
+details {
+    position: relative;
+    cursor: pointer;
+}
+
+div#pendingfotos {
+    position: absolute;
+    z-index: 10;
+    background: white;
+    display: grid;
+    grid-template-columns: repeat(5,25ch);
+    border: 1px solid;
+    border-radius: 4px;
+
+}
+#pendingfotos button{
+  position: relative;
+  height:11em;
+  background-size: contain;
+  background-position: left;
   background-repeat: no-repeat;
-  position: fixed;
-  width: 100vw;
-  height:100vh;
 }
+#pendingfotos button span{
+  background: rgba(255,255,255,0.5);
+  position: absolute;
+  top:0;
+}
+
 .foto #levelmap{
   opacity:0.5;
 }

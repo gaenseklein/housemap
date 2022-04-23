@@ -6,101 +6,84 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <div class="toolbar">
 
-    </div>
     <div id="map">
       <div id="leveltabs"></div>
       <div id="levelwrapper"></div>
       <div id="fotowrapper"></div>
     </div>
-    <div id="fotoview">
+    <div id="levelcreator" class="leveledit">
+      <div class="title">
+        <span>
+          levelcreator
+        </span>
 
-    </div>
-    <div id="dialogues">
-      <div id="levelcreator">
-        <div class="title">
-          <span>
-            levelcreator
-          </span>
-          <button type="button" name="button" onclick="housemap.saveMap({json:true})">save data</button>
-          <button type="button" name="button" onclick="housemap.loadMap()">load data</button>
-          <button type="button" name="button" onclick="housemap.saveMap({html:true})">save as fotomap</button>
-        </div>
-        <div class="toolbar">
-          <div class="leveltools">
-            <label for="levelchoose">change level</label>
-            <select id="levelchoose" class="" name="" onchange="housemap.changeLevel()">
-              <option value="0">eg</option>
-              <option value="newLevel">add new level</option>
-            </select>
-            <input type="hidden" name="" id="levelcreatoroldname" value="eg">
-            <label for="levelcreatorname">name</label> <input type="text" id="levelcreatorname" value="eg" onkeyup="housemap.changeLevelName()">
+      </div>
+      <div class="toolbar">
 
-            <button type="button" name="button" onclick="housemap.deleteLevel()">delete level</button>
-          </div>
+        <div class="chooseCreatorType">
+          <input type="radio" name="creatortype" value="importexport" id='creatortypefile' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypefile">file</label>
+          <input type="radio" name="creatortype" value="leveledit" id='creatortypelevel' onclick="housemap.chooseCreatorType(this.value)" checked><label for="creatortypelevel">level</label>
           <input type="radio" name="creatortype" value="background" id='creatortypebackground' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypebackground">background</label>
           <input type="radio" name="creatortype" value="grundriss" id='creatortypegrundriss' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypegrundriss">draw paths</label>
           <input type="radio" name="creatortype" value="objekte" id='creatortypeobjekte' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypeobjekte">objects</label>
           <input type="radio" name="creatortype" value="label" id='creatortypelabel' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypelabel">labels</label>
           <input type="radio" name="creatortype" value="foto" id='creatortypefoto' onclick="housemap.chooseCreatorType(this.value)"><label for="creatortypefoto">fotolinks</label>
-          <!--<button type="button" name="button" onclick="housemap.saveLevel()">save level</button>-->
-          <div class="backgroundtools innertoolbar">
-            <input type="file" name="" value="" id="backgroundupload" onchange="housemap.uploadBackground()">
-            <label for="backgroundupload">upload new background</label>
-            <button id="deletebackgroundbutton" type="button" name="button" onclick="housemap.deleteBackground()" disabled>delete background</button>
-          </div>
-          <div class="grundrisstools innertoolbar">
-            <div class="addPaths">
-              <button type="button" name="button" onclick="housemap.createNewPath()">create new path</button>
-              <button type="button" name="button" onclick="housemap.createNewSquare()">create new square</button>
-              <button type="button" name="button" disabled>create new curve</button>
-            </div>
-              <div class="editPaths">
-                <button type="button" name="button" onclick="housemap.deleteLastWaypoint()">delete last waypoint</button>
-                <button type="button" name="button" onclick="housemap.deleteLastPath()">delete path</button>
-                <button type="button" name="button" onclick="housemap.returnToPaths()">return to pathoverview</button>
-              </div>
-          </div>
-          <div class="objektetools innertoolbar">
-            <div class="addObjects">
-              <span>add objects:</span>
-              <button class="objectbutton" id="objektdoor" type="button" name="door" onclick="housemap.addObjectToMap(this)">
-                <div>
-                  <svg width="50" height="50" viewbox="0 0 50 50">
-                    <path class="door" d="M0,50  A 50,50,0,0,1,50,0 L48,52 L0,52 Z" />
-                  </svg>
-                </div>
-              </button>
-            </div>
-            <div id="selectedObjectConfig">
-              <input id="selectedObjectConfigId" type="hidden"  name="" value="">
-              <span>selected object:</span>
-              <span id="selectedObjectConfigName"></span>
-              <label for="selectedObjectConfigRotation">rotation:</label>
-              <input id="selectedObjectConfigRotation" type="range" name="" min="-180" max="180" step="1" value="0" oninput="housemap.rotateObjectOnMap()">
-              <input id="selectedObjectConfigMirror" type="checkbox" name="" value="" onclick="housemap.mirrorObject()">
-              <label for="selectedObjectConfigMirror">Mirror</label>
-              <button id="selectedObjectConfigDelete" type="button" name="button" onclick="housemap.removeObjectFromMap()">delete object</button>
-            </div>
-          </div>
-          <div class="labeltools innertoolbar">
-            <button type="button" name="button" onclick="housemap.createLabel()">new label</button>
-            <div class="selectedLabel">
-              <span>selected label:</span>
-              <input id="selectedLabelText" type="text" name="" value="text" onkeyup="housemap.changeLabel()">
-              <label for="selectedLabelSize">fontsize:</label>
-              <input id="selectedLabelSize" type="range" name="" min="0" max="5" step="1" value="" oninput="housemap.changeLabelSize()">
-              <label for="selectedLabelRotation">rotation:</label>
-              <input id="selectedLabelRotation" type="range" name="" min="-180" max="180" step="1" value="0" oninput="housemap.rotateLabel()">
-              <button type="button" name="button" onclick="housemap.deleteLabel()">delete label</button>
-            </div>
+        </div>
+        <div class="file innertoolbar">
+          <button type="button" name="button" onclick="housemap.saveMap({json:true})">save data</button>
+          <button type="button" name="button" onclick="housemap.loadMap()">load data</button>
+          <button type="button" name="button" onclick="housemap.saveMap({html:true})">save as fotomap</button>
+        </div>
+        <div class="leveltools innertoolbar">
+          <!--<label for="levelchoose">change level</label>-->
+          <select id="levelchoose" class="" name="" onchange="housemap.changeLevel()">
+            <option value="0">eg</option>
+            <option value="newLevel">add new level</option>
+          </select>
+          <input type="hidden" name="" id="levelcreatoroldname" value="eg">
+          <label for="levelcreatorname">name</label> <input type="text" id="levelcreatorname" value="eg" onkeyup="housemap.changeLevelName()">
 
+          <button type="button" name="button" onclick="housemap.deleteLevel()">delete level</button>
+        </div>
+
+        <div class="backgroundtools innertoolbar">
+          <input type="file" name="" value="" id="backgroundupload" onchange="housemap.uploadBackground()">
+          <label for="backgroundupload">upload new background</label>
+          <button id="deletebackgroundbutton" type="button" name="button" onclick="housemap.deleteBackground()" disabled>delete background</button>
+        </div>
+        <div class="grundrisstools innertoolbar">
+          <div class="addPaths">
+            <button type="button" name="button" onclick="housemap.createNewPath()">create new path</button>
+            <button type="button" name="button" onclick="housemap.createNewSquare()">create new square</button>
+            <button type="button" name="button" disabled>create new curve</button>
           </div>
-          <div class="fototools innertoolbar">
-            <input id="fotoupload" type="file" name="" value="" multiple onchange="housemap.uploadFotos()">
-            <label for="fotoupload">upload fotos</label>
-            <details>
+          <div class="editPaths">
+            <button type="button" name="button" onclick="housemap.deleteLastWaypoint()">delete last waypoint</button>
+            <button type="button" name="button" onclick="housemap.deleteLastPath()">delete path</button>
+            <button type="button" name="button" onclick="housemap.returnToPaths()">return to pathoverview</button>
+          </div>
+        </div>
+        <div class="objektetools innertoolbar">
+          <div class="addObjects">
+            <span>add objects:</span>
+            <button class="objectbutton" id="objektdoor" type="button" name="door" onclick="housemap.addObjectToMap(this)">
+              <div>
+                <svg width="50" height="50" viewbox="0 0 50 50">
+                  <path class="door" d="M0,50  A 50,50,0,0,1,50,0 L48,52 L0,52 Z" />
+                </svg>
+              </div>
+            </button>
+          </div>
+
+        </div>
+        <div class="labeltools innertoolbar">
+          <button type="button" name="button" onclick="housemap.createLabel()">new label</button>
+        </div>
+        <div class="fototools innertoolbar">
+          <input id="fotoupload" type="file" name="" value="" multiple onchange="housemap.uploadFotos()">
+          <label for="fotoupload">upload fotos</label>
+          <details>
             <summary>
               pending fotos
               <span class="icon">👇</span>
@@ -112,32 +95,61 @@
               </button>
             </div>
           </details>
+
+        </div>
+        <div class="selectedItems">
+          <div id="selectedObjectConfig">
+            <input id="selectedObjectConfigId" type="hidden"  name="" value="">
+            <h4>
+              <span>selected object:</span>
+              <span id="selectedObjectConfigName"></span>
+            </h4>
+            <label for="selectedObjectConfigRotation">rotation:</label>
+            <input id="selectedObjectConfigRotation" type="range" name="" min="-180" max="180" step="1" value="0" oninput="housemap.rotateObjectOnMap()">
+            <label for="selectedObjectConfigMirror">Mirror</label>
+            <input id="selectedObjectConfigMirror" type="checkbox" name="" value="" onclick="housemap.mirrorObject()">
+            <button id="selectedObjectConfigDelete" type="button" name="button" onclick="housemap.removeObjectFromMap()">delete object</button>
+          </div>
+          <div class="selectedLabel">
+            <h4>
+              <span>selected label:</span>
+            </h4>
+            <input id="selectedLabelText" type="text" name="" value="text" onkeyup="housemap.changeLabel()">
+            <label for="selectedLabelSize">fontsize:</label>
+            <input id="selectedLabelSize" type="range" name="" min="0" max="5" step="1" value="" oninput="housemap.changeLabelSize()">
+            <label for="selectedLabelRotation">rotation:</label>
+            <input id="selectedLabelRotation" type="range" name="" min="-180" max="180" step="1" value="0" oninput="housemap.rotateLabel()">
+            <button type="button" name="button" onclick="housemap.deleteLabel()">delete label</button>
+          </div>
+
           <div class="selectedFoto">
-            <span>selected fotolink: </span>
-            <span id="selectedFotoName"></span>
+            <h4>
+              <span>selected fotolink: </span>
+              <span id="selectedFotoName"></span>
+            </h4>
             <label for="selectedFotoRotation">rotation:</label>
             <input id="selectedFotoRotation" type="range" name="" min="-180" max="180" step="1" value="0" oninput="housemap.rotateFoto()">
-            <button type="button" name="button" onclick="housemap.deleteFoto()">delete fotolink</button>
+            <label for="fotolevelchange">change level</label>
             <select id="fotolevelchange" name="" onchange="housemap.moveFotoToLevel(this.value)">
               <option value="eg" selected>eg</option>
             </select>
-          </div>
-
+            <button type="button" name="button" onclick="housemap.deleteFoto()">delete fotolink</button>
+            <div id="levelfotopreview"></div>
           </div>
         </div>
-        <div id="levelfotopreview"></div>
-        <div id="levelmap">
-          <div class="levelmeter"></div>
-          <svg id="levelgrundriss" width="1000" height="500">
+      </div>
 
-          </svg>
-          <div id="levelclickmap"></div>
-          <div id="levelgrundrisspaths"></div>
-          <div id="levelgrundrisswaypoints"></div>
-          <div id="levelobjekte"></div>
-          <div id="levellabel"></div>
-          <div id="levelfotos"></div>
-        </div>
+      <div id="levelmap">
+        <div class="levelmeter"></div>
+        <svg id="levelgrundriss" width="1000" height="500">
+
+        </svg>
+        <div id="levelclickmap"></div>
+        <div id="levelgrundrisspaths"></div>
+        <div id="levelgrundrisswaypoints"></div>
+        <div id="levelobjekte"></div>
+        <div id="levellabel"></div>
+        <div id="levelfotos"></div>
       </div>
     </div>
     <div id="svgcontainer">

@@ -598,10 +598,11 @@ housemap = {
         housemap.pendingfotos.splice(b.name,1)
         housemap.buildPendingFotos();
       }
-      let img = new Image();
-      img.src=this.pendingfotos[x].b64;
+      // let img = new Image();
+      // img.src=this.pendingfotos[x].b64;
       b.appendChild(s);
-      b.appendChild(img);
+      // b.appendChild(img);
+      b.style.backgroundImage='url('+this.pendingfotos[x].b64+')'
       pendingfotos.appendChild(b)
     }
   },
@@ -652,7 +653,11 @@ housemap = {
     if(old)old.classList.remove('selected');
     fl.div.classList.add('selected');
     selectedFotoRotation.name=id;
-    levelfotopreview.style.backgroundImage='url('+fl.b64+')'
+    // levelfotopreview.style.backgroundImage='url('+fl.b64+')'
+    levelfotopreview.innerHTML='';
+    let fpw=new Image();
+    fpw.src=fl.b64
+    levelfotopreview.appendChild(fpw);
     fotolevelchange.innerHTML='';
     for (let x=0;x<this.level.length;x++){
       let opt=document.createElement('option');
