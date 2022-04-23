@@ -20,20 +20,44 @@
           <path d="M95,60 L95,10 L75,30 M95,10 L115,30" />
         </svg>
       </div>
+      <div id="objectsvgwrapperdoor">
+        <svg width="50" height="50" viewBox="0 0 50 50">
+          <path class="door" d="M0,50  A 50,50,0,0,1,50,0 L48,52 L0,52 Z"></path>
+        </svg>
+      </div>
     </div>
     <script src="start.js"></script>
     <script type="text/javascript">
-    const fontsizes=[
-      "initial",
-      'large',
-      'larger',
-      'x-large',
-      'xx-large',
-      'xxx-large'
-    ]
+
     function init(){
       let lo=JSON.parse(start);
       console.log(lo);
+      drawMap(lo)
+    }
+    function drawMap(lo){
+      const fontsizes=[
+        "initial",
+        'large',
+        'larger',
+        'x-large',
+        'xx-large',
+        'xxx-large'
+      ]
+      function createElement(type, add){
+        let keys=Object.keys(add);
+        let specialkeys=['for',]
+        let el=document.createElement(type);
+        for (let x=0;x<keys.length;x++){
+          if(specialkeys.indexOf(keys[x])>-1){
+            el.setAttribute(keys[x],add[keys[x]]);
+          }else{
+            el[keys[x]]=add[keys[x]];
+          }
+
+        }
+        return el;
+      }
+
       for (let x=0;x<lo.length;x++){
         let level=lo[x];
         let radio=createElement('input',{
@@ -41,6 +65,7 @@
           id:'levelradio'+x,
           name:'level',
         });
+        if(x==0)radio.checked=true
         let radiolabel=createElement('label',{
           for:'levelradio'+x,
           innerText:level.name,
@@ -56,6 +81,41 @@
         leveltabs.appendChild(radiolabel);
         //background to level
         if(level.background)leveldiv.style.backgroundImage='url('+level.background+')';
+        //paths
+        let pathwrapper=createElement('div',{
+          className:'pathwrapper'
+        })
+        let pathsvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        for(let i=0;i<level.paths.length;i++){
+          drawPath(level.paths[i],pathsvg);
+        }
+        pathwrapper.appendChild(pathsvg);
+        leveldiv.appendChild(pathwrapper);
+        //objects -> objectsvgwrapperdoor
+        for(let o=0;o<level.objects.length;o++){
+          let obj=createElement('div',{
+            className:'object '+level.objects[o].type,
+            innerHTML:objectsvgwrapperdoor.innerHTML,
+            // innerHTML:level.objects[o].rawsvg,
+          })
+          obj.style.left=level.objects[o].x+'px'
+          obj.style.top=level.objects[o].y+'px'
+          obj.style.transform='rotate('+level.objects[o].rotation+'deg)'
+          if(level.objects[o].mirror)obj.style.transform+=' scale(-1,1)'
+          leveldiv.appendChild(obj);
+        }
+        //label
+        for(let l=0;l<level.labels.length;l++){
+          let label=createElement('div',{
+            className:'label',
+            innerText: level.labels[l].text,
+          })
+          label.style.left=level.labels[l].x+'px'
+          label.style.top=level.labels[l].y+'px'
+          label.style.transform='rotate('+level.labels[l].rotation+'deg)'
+          label.style.fontSize=fontsizes[level.labels[l].size]
+          leveldiv.appendChild(label)
+        }
         //fotolinks
         for(let f=0;f<level.fotos.length;f++){
           let foto=createElement('a',{
@@ -75,38 +135,22 @@
           leveldiv.appendChild(fotolink)
           fotowrapper.appendChild(foto)
         }
-        //label
-        for(let l=0;l<level.labels.length;l++){
-          let label=createElement('div',{
-            className:'label',
-            innerText: level.labels[l].text,
-          })
-          label.style.left=level.labels[l].x+'px'
-          label.style.top=level.labels[l].y+'px'
-          label.style.transform='rotate('+level.labels[l].rotation+'deg)'
-          label.style.fontSize=fontsizes[level.labels[l].size]
-          leveldiv.appendChild(label)
-        }
-        //paths
-        //objects
+
       }
     }
 
     init();
 
-    function createElement(type, add){
-      let keys=Object.keys(add);
-      let specialkeys=['for',]
-      let el=document.createElement(type);
-      for (let x=0;x<keys.length;x++){
-        if(specialkeys.indexOf(keys[x])>-1){
-          el.setAttribute(keys[x],add[keys[x]]);
-        }else{
-          el[keys[x]]=add[keys[x]];
-        }
-
+    function drawPath(path, targetsvg){
+      let d='M'+path.startx+','+path.starty;
+      for (let x=0;x<path.waypoints.length;x++){
+        d+=' L'+path.waypoints[x].x+','+path.waypoints[x].y;
       }
-      return el;
+      if(path.square || path.closePath)d+='Z'
+      let svgpath= document.createElementNS("http://www.w3.org/2000/svg", 'path');
+      // svgpath.setAttribute('style','fill:none;stroke:green;stroke-width:1px;stroke-linejoin:round;')
+      svgpath.setAttribute('d',d);
+      targetsvg.appendChild(svgpath);
     }
 
     </script>

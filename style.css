@@ -42,7 +42,7 @@
 #levelgrundrisswaypoints,
 #levelclickmap,
 .grundriss #levelmap.editPath #levelgrundrisspaths,
-#levelmap #levelgrundrisswaypoints,{
+#levelmap #levelgrundrisswaypoints{
   display:none;
 }
 .grundriss #levelmap #levelgrundrisspaths,
@@ -180,5 +180,8 @@ path.door{
   opacity:0.5;
 }
 #svgcontainer{
+  display: none;
+}
+#map{
   display: none;
 }

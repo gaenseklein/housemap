@@ -30,13 +30,23 @@ housemap = {
     this.level.push(this.creatinglevel);
   },
   saveMap: function(exportoptions){
-    let saveobj = JSON.parse(JSON.stringify(this.level));
-    let savetext = JSON.stringify(saveobj);
-    savetext = 'var start=`'+savetext+'`;';
-    var a = document.createElement("a");
-    a.href = window.URL.createObjectURL(new Blob([savetext], {type: "text/plain"}));
-    a.download = "start.js";
-    a.click();
+    let savetext='';
+    if(exportoptions.json){
+      let saveobj = JSON.parse(JSON.stringify(this.level));
+      savetext = JSON.stringify(saveobj);
+      savetext = 'var start=`'+savetext+'`;';
+      var a = document.createElement("a");
+      a.href = window.URL.createObjectURL(new Blob([savetext], {type: "text/plain"}));
+      a.download = "start.js";
+      a.click();
+    }
+    if(exportoptions.html){
+      savetext=this.createHTMLPage();
+      var a = document.createElement("a");
+      a.href = window.URL.createObjectURL(new Blob([savetext], {type: "text/plain"}));
+      a.download = "fotomap.htm";
+      a.click();
+    }
   },
   chooseCreatorType: function(radioname){
     levelcreator.className=radioname;
@@ -312,11 +322,15 @@ housemap = {
       type:button.name,
       id:this.counter.object,
       svg:button.firstElementChild.cloneNode(true),
+      innerHTML:button.firstElementChild.innerHTML,
       width:50,
       height:50,
       rotation:0,
       mirror:false,
     }
+    ob.innerHTML=ob.innerHTML.replaceAll('\n','')
+    ob.innerHTML=ob.innerHTML.replaceAll('\"','\'')
+    ob.innerHTML=ob.innerHTML.replaceAll('  ',' ')
     ob.svg.id='objekt'+this.counter.object;
     ob.svg.name=this.counter.object;
     ob.svg.classList.add('objekt');
@@ -329,6 +343,8 @@ housemap = {
       housemap.selectObject(elm.name);
     },function(elm){
       console.log('object moved',elm);
+      ob.x=elm.offsetLeft
+      ob.y=elm.offsetTop
     });
     ob.svg.onclick=function(e){
       housemap.selectObject(this.name);
@@ -666,6 +682,124 @@ housemap = {
     this.drawAllLabelsToMap();
     this.drawAllFotoLinksToMap();
   },
+  drawMap: function(lo){
+    const fontsizes=this.fontsizes
+    function createElement(type, add){
+      let keys=Object.keys(add);
+      let specialkeys=['for',]
+      let el=document.createElement(type);
+      for (let x=0;x<keys.length;x++){
+        if(specialkeys.indexOf(keys[x])>-1){
+          el.setAttribute(keys[x],add[keys[x]]);
+        }else{
+          el[keys[x]]=add[keys[x]];
+        }
+
+      }
+      return el;
+    }
+
+    for (let x=0;x<lo.length;x++){
+      let level=lo[x];
+      let radio=createElement('input',{
+        type:'radio',
+        id:'levelradio'+x,
+        name:'level',
+      });
+      if(x==0)radio.checked=true
+      let radiolabel=createElement('label',{
+        for:'levelradio'+x,
+        innerText:level.name,
+        id:'leveltab'+x
+      });
+      // radiolabel.setAttribute('for','test');
+      let leveldiv=createElement('div',{
+        className:'level',
+        id:'level'+x,
+      })
+      map.insertBefore(radio,leveltabs);
+      levelwrapper.appendChild(leveldiv);
+      leveltabs.appendChild(radiolabel);
+      //background to level
+      if(level.background)leveldiv.style.backgroundImage='url('+level.background+')';
+      //paths
+      let pathwrapper=createElement('div',{
+        className:'pathwrapper'
+      })
+      let pathsvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      for(let i=0;i<level.paths.length;i++){
+        this.drawPath(level.paths[i],pathsvg);
+      }
+      pathwrapper.appendChild(pathsvg);
+      leveldiv.appendChild(pathwrapper);
+      //objects -> objectsvgwrapperdoor
+      for(let o=0;o<level.objects.length;o++){
+        let obj=createElement('div',{
+          className:'object '+level.objects[o].type,
+          // innerHTML:objectsvgwrapperdoor.innerHTML,
+          innerHTML:level.objects[o].svg.innerHTML,
+        })
+        obj.style.left=level.objects[o].x+'px'
+        obj.style.top=level.objects[o].y+'px'
+        obj.style.transform='rotate('+level.objects[o].rotation+'deg)'
+        if(level.objects[o].mirror)obj.style.transform+=' scale(-1,1)'
+        leveldiv.appendChild(obj);
+      }
+      //label
+      for(let l=0;l<level.labels.length;l++){
+        let label=createElement('div',{
+          className:'label',
+          innerText: level.labels[l].text,
+        })
+        label.style.left=level.labels[l].x+'px'
+        label.style.top=level.labels[l].y+'px'
+        label.style.transform='rotate('+level.labels[l].rotation+'deg)'
+        label.style.fontSize=fontsizes[level.labels[l].size]
+        leveldiv.appendChild(label)
+      }
+      //fotolinks
+      for(let f=0;f<level.fotos.length;f++){
+        let foto=createElement('a',{
+          className:'fotoview',
+          id:'foto'+x+f,
+          href:'#map',
+        });
+        foto.style.backgroundImage='url('+level.fotos[f].b64+')'
+        let fotolink = createElement('a',{
+          className:'fotolink',
+          href:'#foto'+x+f,
+          innerHTML:fotolinksvgwrapper.innerHTML,
+        })
+        fotolink.style.left=level.fotos[f].x+'px'
+        fotolink.style.top=level.fotos[f].y+'px'
+        fotolink.style.transform='rotate('+level.fotos[f].rotation+'deg)'
+        leveldiv.appendChild(fotolink)
+        fotowrapper.appendChild(foto)
+      }
+
+    }
+  },
+  createHTMLPage: function(){
+    this.drawMap(this.level);
+    let styles=cssraw.innerHTML
+    let html=`<!DOCTYPE html>
+    <html lang="en" dir="ltr">
+      <head>
+        <meta charset="utf-8">
+        <title>housemap viewer</title>
+        <style>
+        ${styles}
+        </style>
+      </head>
+      <body>
+      <div id="map">
+      ${map.innerHTML}
+      </div>
+      </body>
+    </html>
+      `
+    return html
+  },
 
 }
 
@@ -734,5 +868,6 @@ function dragElement(elmnt, clickfunction, followfunction) {
     document.onmouseup = null;
     document.onmousemove = null;
   }
+
 }
 housemap.init();
