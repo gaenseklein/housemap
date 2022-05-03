@@ -855,6 +855,7 @@ housemap = {
           className:'fotoview',
           id:'foto'+x+f,
           href:'#map',
+          tabIndex:f+10,
         });
         foto.style.backgroundImage='url('+level.fotos[f].b64+')'
         let fotolink = createElement('a',{
@@ -888,6 +889,14 @@ housemap = {
       ${map.innerHTML}
       </div>
       </body>
+      <script>
+      document.body.onhashchange = function(e){
+          let old = document.querySelector('.viewIt')
+          if(old)old.classList.remove('viewIt');
+          let el = document.getElementById(location.hash.substring(1));
+          if(el && location.hash!='#map')el.classList.add('viewIt');
+      }
+      </script>
     </html>
       `
     return html
