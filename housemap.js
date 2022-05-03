@@ -61,7 +61,7 @@ housemap = {
             housemap.loadData(payload);
           }
         } catch (e) {
-          console.warn('no json?')
+          console.warn('no json?',e)
         }
       }
       reader.readAsText(file);
@@ -86,6 +86,19 @@ housemap = {
         ob.svg.innerHTML=ob.innerHTML;
         this.finalizeObjectDiv(ob)
         console.log(ob)
+      }
+      for(let l=0;l<leveldata[x].labels.length;l++){
+        let lab=leveldata[x].labels[l];
+        this.addDivToLabel(lab);
+        levellabel.appendChild(lab.div)
+        lab.div.style.left=lab.x+'px'
+        lab.div.style.top=lab.y+'px'
+      }
+      for(let fl=0;fl<leveldata[x].fotos.length;fl++){
+        let fotol=leveldata[x].fotos[fl]
+        this.addDivToFotolink(fotol)
+        // fotol.div.style.left=fotol.x+'px'
+        // fotol.div.style.top=fotol.y+'px'
       }
       this.counter.path+=leveldata[x].paths.length;
       this.counter.foto+=leveldata[x].fotos.length;
@@ -616,6 +629,12 @@ housemap = {
       y:250,
       rotation:0,
     }
+    this.addDivToFotolink(nl)
+    this.creatinglevel.fotos.push(nl)
+    levelfotos.appendChild(div);
+    this.selectFotoLink(nl.id);
+  },
+  addDivToFotolink: function(nl){
     let div=document.createElement('div')
     // let icon=new Image();
     // icon.src="cam.png"
@@ -623,7 +642,9 @@ housemap = {
     div.innerHTML=document.getElementById('fotolinksvgwrapper').innerHTML;
     div.className="fotolink"
     div.name=nl.id
-
+    div.style.top=nl.y+'px'
+    div.style.left=nl.x+'px'
+    div.style.transform='rotate('+nl.rotation+'deg)'
     dragElement(div,null,function(elm){
       nl.x=elm.offsetLeft;
       nl.y=elm.offsetTop;
@@ -632,9 +653,6 @@ housemap = {
       housemap.selectFotoLink(this.name)
     }
     nl.div=div
-    this.creatinglevel.fotos.push(nl)
-    levelfotos.appendChild(div);
-    this.selectFotoLink(nl.id);
   },
   getFotoLinkById: function(id){
     let fl;
